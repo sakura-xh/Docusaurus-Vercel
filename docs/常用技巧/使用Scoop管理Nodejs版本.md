@@ -3,7 +3,14 @@
 ```bash
 scoop install nodejs-lts
 ```
+:::info
+
+需要注意的是，Scoop 中只包含每个大版本的最新的 Nodejs，这是因为 Scoop 的拉取机制决定的
+
+:::
+
 ## 列出已安装的 Nodejs
+
 当忘记安装了什么版本的 Nodejs 时，可以执行
 ```bash
 scoop list node
