@@ -10,9 +10,10 @@ import { themes as prismThemes } from 'prism-react-renderer';
 const config = {
   title: 'CatNB',
   tagline: 'CatNB',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/logoo.svg',
 
   // Set the production url of your site here
+
   url: 'https://docs.317966.xyz',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
