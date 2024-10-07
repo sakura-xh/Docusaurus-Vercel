@@ -37,12 +37,14 @@
 
 /* 代码 块*/
 .token {
-  font-family: 'JetBrains Mono Medium', monospace;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
 }
 
 /* 行内代码 */
 code {
-  font-family: 'JetBrains Mono Medium', monospace;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
   color: #c7254e;
   background-color: #f9f2f480;
   padding: 2px 4px;
