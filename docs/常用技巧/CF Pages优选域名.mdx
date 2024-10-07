@@ -1,0 +1,292 @@
+# CF Pages 优选域名
+
+## 前言
+
+上次研究了半天的 Saas 回源，结果发现那玩意有个天生的毛病，首先是因为最后解析到服务的需要是一个走了代理(小黄云)的 A 或者 CNAME 记录，但是我需要指向的 Pages 本来就是走的 CF 的 CDN，所以显得不合理，双重代理下会报错 522，不挂代理又无法使用回源域名，所以最后上网找了半天发现压根不用这么麻烦
+
+## 操作流程
+
+准备一个域名，是不是 CF 托管的都行，DNSPod 托管的最好，因为可以使用境内境外分流，更方便获取合适的 CDN 节点
+
+然后先去 Pages 页面的自定义域部分，添加一个子域名指向 Pages 的 dev 地址，然后去 DNSPod 添加 CNAME 记录，将子域名指向 Pages 的地址，然后等待 CF 验证 DNS 记录完成，签发 SSL 证书，然后使用新的域名去访问 Pages，如果能正常访问且证书没有问题，那就去 DNSPod，将刚才指向 Pages 的地址的 CNAME 记录修改一下，将指向的地址修改成优选域名，然后等待 DNS 解析记录更新，此时再去访问这个域名会发现还是能够跳转到之前设定的 Pages 页面并且无代理的情况下访问速度要更快
+
+这里我使用的优选域名是由 CMLiussss 维护的三网自动分流的优选域名
+
+```
+cf.090227.xyz#三网自适应分流官方优选
+ct.090227.xyz#电信官方优选
+cmcc.090227.xyz#移动官方优选
+```
+
+还有很多优秀的优选域名的地址可以自行寻找
+
+## 9.26 更新
+
+又研究了一下，暂时新加了一种方案
+
+### 使用脚本定时任务自动获取最优IP
+
+这个其实感觉没有比之前用的那个域名强到哪里去，甚至因为不能自动识别出口运营商，在有些网络环境下反而称得上一般般，我也就试着用两天，感觉不好用会切回去
+
+首先偷的代码，使用腾讯云的API去获取解析记录，然后自动请求接口返回最新的优选IP，然后填入解析记录，实现定时更新
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+<TabItem value="cdn" label="CDN修改">
+
+```python title="cdn2pod.py"
+# -*- coding: utf-8 -*-
+import time
+import requests
+from qCloud import QcloudApiv3
+import traceback
+import os
+import json
+
+# 域名和子域名
+DOMAIN = ''
+SUB_DOMAIN = ''
+
+# API 密钥
+SECRETID = ''
+SECRETKEY = ''
+
+# pushplus_token
+PUSHPLUS_TOKEN = ''
+
+
+def get_cf_speed_test_ip(timeout=10, max_retries=5):
+    for attempt in range(max_retries):
+        try:
+            # 发送 GET 请求，设置超时
+            response = requests.get('https://ip.164746.xyz/ipTop.html', timeout=timeout)
+
+            # 检查响应状态码
+            if response.status_code == 200:
+                return response.text
+        except Exception as e:
+            traceback.print_exc()
+            print(f"get_cf_speed_test_ip Request failed (attempt {attempt + 1}/{max_retries}): {e}")
+    # 如果所有尝试都失败，返回 None 或者抛出异常，根据需要进行处理
+    return None
+
+
+def build_info(cloud):
+    try:
+        ret = cloud.get_record(DOMAIN, 100, SUB_DOMAIN, 'A')
+        def_info = []
+        for record in ret["data"]["records"]:
+            info = {"recordId": record["id"], "value": record["value"]}
+            if record["line"] == "境内":
+                def_info.append(info)
+        print(f"build_info success: ---- Time: " + str(
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- ip：" + str(def_info))
+        return def_info
+    except Exception as e:
+        traceback.print_exc()
+        print(f"build_info ERROR: ---- Time: " + str(
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- MESSAGE: " + str(e))
+
+
+def change_dns(cloud, record_id, cf_ip):
+    try:
+        cloud.change_record(DOMAIN, record_id, SUB_DOMAIN, cf_ip, "A", "境内", 600)
+        print(f"change_dns success: ---- Time: " + str(
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- ip：" + str(cf_ip))
+        return "ip:" + str(cf_ip) + "解析" + str(SUB_DOMAIN) + "." + str(DOMAIN) + "成功"
+
+    except Exception as e:
+        traceback.print_exc()
+        print(f"change_dns ERROR: ---- Time: " + str(
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- MESSAGE: " + str(e))
+        return "ip:" + str(cf_ip) + "解析" + str(SUB_DOMAIN) + "." + str(DOMAIN) + "失败"
+
+
+def pushplus(content):
+    url = 'http://www.pushplus.plus/send'
+    data = {
+        "token": PUSHPLUS_TOKEN,
+        "title": "IP优选DNSPOD推送",
+        "content": content,
+        "template": "markdown",
+        "channel": "wechat"
+    }
+    body = json.dumps(data).encode(encoding='utf-8')
+    headers = {'Content-Type': 'application/json'}
+    requests.post(url, data=body, headers=headers)
+
+
+if __name__ == '__main__':
+    # 构造环境
+    cloud = QcloudApiv3(SECRETID, SECRETKEY)
+
+    # 获取DNS记录
+    info = build_info(cloud)
+
+    # 获取最新优选IP
+    ip_addresses_str = get_cf_speed_test_ip()
+    ip_addresses = ip_addresses_str.split(',')
+
+    pushplus_content = []
+    # 遍历 IP 地址列表
+    for index, ip_address in enumerate(ip_addresses):
+        # 执行 DNS 变更
+        dns = change_dns(cloud, info[index]["recordId"], ip_address)
+        pushplus_content.append(dns)
+
+    pushplus('\n'.join(pushplus_content))
+```
+
+</TabItem>
+<TabItem value="dep" label="依赖API">
+
+```python title="qCloud.py"
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Mail: tongdongdong@outlook.com
+# Reference: https://cloud.tencent.com/document/product/302/8517
+# QcloudApiv3 DNSPod 的 API 更新了 By github@z0z0r4
+
+import json
+from tencentcloud.common import credential
+from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
+from tencentcloud.dnspod.v20210323 import dnspod_client, models
+
+
+class QcloudApiv3():
+    def __init__(self, SECRETID, SECRETKEY):
+        self.SecretId = SECRETID
+        self.secretKey = SECRETKEY
+        self.cred = credential.Credential(SECRETID, SECRETKEY)
+
+    def del_record(self, domain: str, record_id: int):
+        client = dnspod_client.DnspodClient(self.cred, "")
+        req_model = models.DeleteRecordRequest()
+        params = {
+            "Domain": domain,
+            "RecordId": record_id
+        }
+        req_model.from_json_string(json.dumps(params))
+
+        resp = client.DeleteRecord(req_model)
+        resp = json.loads(resp.to_json_string())
+        resp["code"] = 0
+        resp["message"] = "None"
+        return resp
+
+    def get_record(self, domain: str, length: int, sub_domain: str, record_type: str):
+        def format_record(record: dict):
+            new_record = {}
+            record["id"] = record['RecordId']
+            for key in record:
+                new_record[key.lower()] = record[key]
+            return new_record
+
+        try:
+            client = dnspod_client.DnspodClient(self.cred, "")
+
+            req_model = models.DescribeRecordListRequest()
+            params = {
+                "Domain": domain,
+                "Subdomain": sub_domain,
+                "RecordType": record_type,
+                "Limit": length
+            }
+            req_model.from_json_string(json.dumps(params))
+
+            resp = client.DescribeRecordList(req_model)
+            resp = json.loads(resp.to_json_string())
+            temp_resp = {}
+            temp_resp["code"] = 0
+            temp_resp["data"] = {}
+            temp_resp["data"]["records"] = []
+            for record in resp['RecordList']:
+                temp_resp["data"]["records"].append(format_record(record))
+            temp_resp["data"]["domain"] = {}
+            temp_resp["data"]["domain"]["grade"] = self.get_domain(domain)["DomainInfo"]["Grade"]  # DP_Free
+            return temp_resp
+        except TencentCloudSDKException:
+            # 构造空响应...
+            temp_resp = {}
+            temp_resp["code"] = 0
+            temp_resp["data"] = {}
+            temp_resp["data"]["records"] = []
+            temp_resp["data"]["domain"] = {}
+            temp_resp["data"]["domain"]["grade"] = self.get_domain(domain)["DomainInfo"]["Grade"]  # DP_Free
+            return temp_resp
+
+    def create_record(self, domain: str, sub_domain: str, value: int, record_type: str = "A", line: str = "默认",
+                      ttl: int = 600):
+        client = dnspod_client.DnspodClient(self.cred, "")
+        req = models.CreateRecordRequest()
+        params = {
+            "Domain": domain,
+            "SubDomain": sub_domain,
+            "RecordType": record_type,
+            "RecordLine": line,
+            "Value": value,
+            "ttl": ttl
+        }
+        req.from_json_string(json.dumps(params))
+
+        # 返回的resp是一个CreateRecordResponse的实例，与请求对象对应
+        resp = client.CreateRecord(req)
+        resp = json.loads(resp.to_json_string())
+        resp["code"] = 0
+        resp["message"] = "None"
+        return resp
+
+    def change_record(self, domain: str, record_id: int, sub_domain: str, value: str, record_type: str = "A",
+                      line: str = "默认", ttl: int = 600):
+        client = dnspod_client.DnspodClient(self.cred, "")
+        req = models.ModifyRecordRequest()
+        params = {
+            "Domain": domain,
+            "SubDomain": sub_domain,
+            "RecordType": record_type,
+            "RecordLine": line,
+            "Value": value,
+            "TTL": ttl,
+            "RecordId": record_id
+        }
+        req.from_json_string(json.dumps(params))
+
+        # 返回的resp是一个ChangeRecordResponse的实例，与请求对象对应
+        resp = client.ModifyRecord(req)
+        resp = json.loads(resp.to_json_string())
+        resp["code"] = 0
+        resp["message"] = "None"
+        return resp
+
+    def get_domain(self, domain: str):
+        client = dnspod_client.DnspodClient(self.cred, "")
+
+        # 实例化一个请求对象,每个接口都会对应一个request对象
+        req = models.DescribeDomainRequest()
+        params = {
+            "Domain": domain
+        }
+        req.from_json_string(json.dumps(params))
+
+        # 返回的resp是一个DescribeDomainResponse的实例，与请求对象对应
+        resp = client.DescribeDomain(req)
+        resp = json.loads(resp.to_json_string())
+        return resp
+```
+
+</TabItem>
+</Tabs>
+
+这个代码只需要填入自己的腾讯云API的ID和密钥就行，域名和子域名那里填自己的
+
+这个代码本来是Github Action执行的，但我改成了写死的，因为我有服务器可以执行定时任务
+
+使用前执行
+
+```bash
+pip install requests==2.28.1 tencentcloud-sdk-python==3.0.806
+```
+
+然后执行`python cdn2pod.py`即可自动刷新解析

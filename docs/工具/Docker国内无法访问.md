@@ -6,7 +6,7 @@
 所以考虑采用网友搭建的第三方镜像源。
 
 ## 解决方案
-### 第三方镜像加速
+### 第三方镜像加速(9.24更新)
 这个方法简单，去网上找就完事了
 ```bash
 sudo mkdir -p /etc/docker
@@ -14,21 +14,22 @@ sudo mkdir -p /etc/docker
 sudo tee /etc/docker/daemon.json <<-'EOF'
 
 {
-
-"registry-mirrors": [
-
-"https://dockerpull.com",
-
-"https://docker.anyhub.us.kg",
-
-"https://dockerhub.jobcher.com",
-
-"https://dockerhub.icu",
-
-"https://docker.awsl9527.cn"
-
-]
-
+  "registry-mirrors": [
+    "https://proxy.1panel.live",
+    "https://docker.1panel.top",
+    "https://dockerproxy.cn",
+    "https://dockerpull.com",
+    "https://docker.1panel.dev",
+    "https://hub.rat.dev",
+    "https://hub.nat.tf",
+    "https://hub1.nat.tf",
+    "https://hub2.nat.tf",
+    "https://docker.1ms.run",
+    "https://docker.m.daocloud.io",
+    "https://dockerproxy.1panel.live",
+    "https://docker.1panel.live",
+    "https://docker.amingg.com"
+  ]
 }
 
 EOF
