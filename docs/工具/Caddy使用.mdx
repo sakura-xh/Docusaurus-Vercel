@@ -115,7 +115,7 @@ EOF
 
 然后我们使用浏览器访问 虚拟机地址:2015，
 
-![image-20241019124014866](./../图片/Caddy使用/image-20241019124014866.png)
+![image-20241019124014866](https://cfr2.317966.xyz/Images/2024/10/Caddy%E4%BD%BF%E7%94%A8/R8LBOmBDpk.jpeg)
 
 可以看到 HTTP 服务已经正常启动
 
@@ -145,7 +145,7 @@ echo '<html><body><h1>Hello, Caddy!</h1></body></html>' > /var/www/example.com/h
 
 然后在拥有`Caddyfile`的目录下执行`caddy start`，此时我们访问虚拟机 IP:2077，可以看到
 
-![image-20241019125455353](./../图片/Caddy使用/image-20241019125455353.png)
+![image-20241019125455353](https://cfr2.317966.xyz/Images/2024/10/Caddy%E4%BD%BF%E7%94%A8/yZHFbMXf8H.jpeg)
 
 可以看到 HTTP 服务器已经成功启动
 
@@ -171,15 +171,15 @@ caddy file-server --listen :2033
 
 文件浏览模式如下
 
-![image-20241019130554029](./../图片/Caddy使用/image-20241019130554029.png)
+![image-20241019130554029](https://cfr2.317966.xyz/Images/2024/10/Caddy%E4%BD%BF%E7%94%A8/ZtoB8rVwrj.jpeg)
 
 比 Python 自带的是要美观一点的，但这又不是纯粹的文件浏览模式，因为当你点击目录，而目录中有索引文件时，他还是会第一时间渲染出来，例如我们点击 code 文件夹，这里面放了一个`index.html`文件，就会被立刻渲染
 
-![image-20241019130809693](./../图片/Caddy使用/image-20241019130809693.png)
+![image-20241019130809693](https://cfr2.317966.xyz/Images/2024/10/Caddy%E4%BD%BF%E7%94%A8/PhCt3crLMQ.jpeg)
 
 而其中的别的文件则无法显示
 
-![image-20241019130847172](./../图片/Caddy使用/image-20241019130847172.png)
+![image-20241019130847172](https://cfr2.317966.xyz/Images/2024/10/Caddy%E4%BD%BF%E7%94%A8/OiA8ghszWa.jpeg)
 
 ### 基于 Docker 构建
 
@@ -215,4 +215,4 @@ docker compose up -d
 
 即可启动一个 caddy 的容器，然后访问地址即可
 
-![image-20241019132749017](./../图片/Caddy使用/image-20241019132749017.png)
+![image-20241019132749017](https://cfr2.317966.xyz/Images/2024/10/Caddy%E4%BD%BF%E7%94%A8/lp7iF9kCVH.jpeg)
