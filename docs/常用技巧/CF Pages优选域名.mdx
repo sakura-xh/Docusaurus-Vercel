@@ -2,7 +2,7 @@
 
 ## 前言
 
-上次研究了半天的 Saas 回源，结果发现那玩意有个天生的毛病，首先是因为最后解析到服务的需要是一个走了代理(小黄云)的 A 或者 CNAME 记录，但是我需要指向的 Pages 本来就是走的 CF 的 CDN，所以显得不合理，双重代理下会报错 522，不挂代理又无法使用回源域名，所以最后上网找了半天发现压根不用这么麻烦
+上次研究了半天的 Saas 回源，结果发现那玩意有个天生的毛病，首先是因为最后解析到服务的需要是一个走了代理 (小黄云) 的 A 或者 CNAME 记录，但是我需要指向的 Pages 本来就是走的 CF 的 CDN，所以显得不合理，双重代理下会报错 522，不挂代理又无法使用回源域名，所以最后上网找了半天发现压根不用这么麻烦
 
 ## 操作流程
 
@@ -24,11 +24,11 @@ cmcc.090227.xyz#移动官方优选
 
 又研究了一下，暂时新加了一种方案
 
-### 使用脚本定时任务自动获取最优IP
+### 使用脚本定时任务自动获取最优 IP
 
 这个其实感觉没有比之前用的那个域名强到哪里去，甚至因为不能自动识别出口运营商，在有些网络环境下反而称得上一般般，我也就试着用两天，感觉不好用会切回去
 
-首先偷的代码，使用腾讯云的API去获取解析记录，然后自动请求接口返回最新的优选IP，然后填入解析记录，实现定时更新
+首先偷的代码，使用腾讯云的 API 去获取解析记录，然后自动请求接口返回最新的优选 IP，然后填入解析记录，实现定时更新
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -82,7 +82,7 @@ def build_info(cloud):
             if record["line"] == "境内":
                 def_info.append(info)
         print(f"build_info success: ---- Time: " + str(
-            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- ip：" + str(def_info))
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- ip:" + str(def_info))
         return def_info
     except Exception as e:
         traceback.print_exc()
@@ -94,7 +94,7 @@ def change_dns(cloud, record_id, cf_ip):
     try:
         cloud.change_record(DOMAIN, record_id, SUB_DOMAIN, cf_ip, "A", "境内", 600)
         print(f"change_dns success: ---- Time: " + str(
-            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- ip：" + str(cf_ip))
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- ip:" + str(cf_ip))
         return "ip:" + str(cf_ip) + "解析" + str(SUB_DOMAIN) + "." + str(DOMAIN) + "成功"
 
     except Exception as e:
@@ -108,7 +108,7 @@ def pushplus(content):
     url = 'http://www.pushplus.plus/send'
     data = {
         "token": PUSHPLUS_TOKEN,
-        "title": "IP优选DNSPOD推送",
+        "title": "IP 优选 DNSPOD 推送",
         "content": content,
         "template": "markdown",
         "channel": "wechat"
@@ -122,10 +122,10 @@ if __name__ == '__main__':
     # 构造环境
     cloud = QcloudApiv3(SECRETID, SECRETKEY)
 
-    # 获取DNS记录
+    # 获取 DNS 记录
     info = build_info(cloud)
 
-    # 获取最新优选IP
+    # 获取最新优选 IP
     ip_addresses_str = get_cf_speed_test_ip()
     ip_addresses = ip_addresses_str.split(',')
 
@@ -231,7 +231,7 @@ class QcloudApiv3():
         }
         req.from_json_string(json.dumps(params))
 
-        # 返回的resp是一个CreateRecordResponse的实例，与请求对象对应
+        # 返回的 resp 是一个 CreateRecordResponse 的实例，与请求对象对应
         resp = client.CreateRecord(req)
         resp = json.loads(resp.to_json_string())
         resp["code"] = 0
@@ -253,7 +253,7 @@ class QcloudApiv3():
         }
         req.from_json_string(json.dumps(params))
 
-        # 返回的resp是一个ChangeRecordResponse的实例，与请求对象对应
+        # 返回的 resp 是一个 ChangeRecordResponse 的实例，与请求对象对应
         resp = client.ModifyRecord(req)
         resp = json.loads(resp.to_json_string())
         resp["code"] = 0
@@ -263,14 +263,14 @@ class QcloudApiv3():
     def get_domain(self, domain: str):
         client = dnspod_client.DnspodClient(self.cred, "")
 
-        # 实例化一个请求对象,每个接口都会对应一个request对象
+        # 实例化一个请求对象，每个接口都会对应一个 request 对象
         req = models.DescribeDomainRequest()
         params = {
             "Domain": domain
         }
         req.from_json_string(json.dumps(params))
 
-        # 返回的resp是一个DescribeDomainResponse的实例，与请求对象对应
+        # 返回的 resp 是一个 DescribeDomainResponse 的实例，与请求对象对应
         resp = client.DescribeDomain(req)
         resp = json.loads(resp.to_json_string())
         return resp
@@ -279,9 +279,9 @@ class QcloudApiv3():
 </TabItem>
 </Tabs>
 
-这个代码只需要填入自己的腾讯云API的ID和密钥就行，域名和子域名那里填自己的
+这个代码只需要填入自己的腾讯云 API 的 ID 和密钥就行，域名和子域名那里填自己的
 
-这个代码本来是Github Action执行的，但我改成了写死的，因为我有服务器可以执行定时任务
+这个代码本来是 Github Action 执行的，但我改成了写死的，因为我有服务器可以执行定时任务
 
 使用前执行
 
