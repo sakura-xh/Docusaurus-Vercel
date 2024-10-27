@@ -66,11 +66,9 @@ sudo yum install -y caddy
 docker pull caddy
 ```
 
-## 使用
+## 基于命令行的使用
 
-### 基于命令行的使用
-
-#### API
+### API
 
 如果我们是通用包管理器安装的 Caddy，那么此时我们可以直接在命令行执行`caddy start`
 
@@ -119,7 +117,7 @@ EOF
 
 可以看到 HTTP 服务已经正常启动
 
-#### Caddyfile
+### Caddyfile
 
 首先创建一个名位`Caddyfile`的文件，无拓展名
 
@@ -149,7 +147,7 @@ echo '<html><body><h1>Hello, Caddy!</h1></body></html>' > /var/www/example.com/h
 
 可以看到 HTTP 服务器已经成功启动
 
-#### 静态文件
+### 静态文件
 
 Caddy 同样可以像 Python 的 http.server 模块一样，搭建一个临时的静态文件服务器
 
@@ -181,7 +179,7 @@ caddy file-server --listen :2033
 
 ![image-20241019130847172](https://cfr2.317966.xyz/Images/2024/10/Caddy%E4%BD%BF%E7%94%A8/OiA8ghszWa.jpeg)
 
-### 基于 Docker 构建
+## 基于 Docker 构建
 
 使用 Docker 也可以创建一个 HTTP 服务器，我们按照上述的内容，先将 Caddy 的镜像拉取下来，我这里使用 Docker Compose 完成容器的搭建，因为我不太喜欢用 Docker Run
 
