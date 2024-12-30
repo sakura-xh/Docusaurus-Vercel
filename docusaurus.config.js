@@ -83,7 +83,7 @@ const config = {
         title: '猫南北文库',
         logo: {
           alt: 'CatNB Logo',
-          src: 'img/logoo.svg',
+          src: 'img/logo.ico',
         },
         items: [
           {
