@@ -4,7 +4,7 @@
  * work well for content-centric websites.
  */
 
-/* Override default Infima variables */
+/* Override default Infima s */
 :root {
   --ifm-color-primary: #2e8555;
   --ifm-color-primary-dark: #29784c;
@@ -30,14 +30,17 @@
 }
 
 /* 自定义字体 */
-@import url('https://npm.onmicrosoft.cn/@fontsource-variable/noto-sans-sc/index.css');
-@import url('https://npm.onmicrosoft.cn/@fontsource-variable/inter/index.css');
-@import url('https://npm.onmicrosoft.cn/@fontsource-variable/jetbrains-mono/index.css');
+@import url('https://npm.onmicrosoft.cn/@fontsource/noto-sans-sc/500.css');
+@import url('https://npm.onmicrosoft.cn/@fontsource/noto-sans-sc/700.css');
+@import url('https://npm.onmicrosoft.cn/@fontsource/inter/500.css');
+@import url('https://npm.onmicrosoft.cn/@fontsource/inter/700.css');
+@import url('https://npm.onmicrosoft.cn/@fontsource/jetbrains-mono/500.css');
+@import url('https://npm.onmicrosoft.cn/@fontsource/jetbrains-mono/700.css');
 
 /* 全局字体设置 */
 html {
-  font-family: 'Inter Variable', 'Noto Sans SC Variable', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-weight: 400;
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 500;
   /* 默认字重 */
   scroll-behavior: smooth;
 }
@@ -46,7 +49,7 @@ html {
 .token,
 code,
 pre {
-  font-family: 'JetBrains Mono Variable', 'Courier New', Courier, monospace;
+  font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
   font-weight: 500;
 }
 
