@@ -10,7 +10,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 const config = {
   title: 'CatNB',
   tagline: 'CatNB',
-  favicon: 'img/logoo.svg',
+  favicon: 'img/logo.ico',
 
   // Set the production url of your site here
 
