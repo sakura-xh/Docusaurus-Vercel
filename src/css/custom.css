@@ -30,12 +30,12 @@
 }
 
 /* 自定义字体 */
-@import url('https://npm.onmicrosoft.cn/@fontsource/noto-sans-sc/500.css');
-@import url('https://npm.onmicrosoft.cn/@fontsource/noto-sans-sc/700.css');
-@import url('https://npm.onmicrosoft.cn/@fontsource/inter/500.css');
-@import url('https://npm.onmicrosoft.cn/@fontsource/inter/700.css');
-@import url('https://npm.onmicrosoft.cn/@fontsource/jetbrains-mono/500.css');
-@import url('https://npm.onmicrosoft.cn/@fontsource/jetbrains-mono/700.css');
+@import url('https://font.onmicrosoft.cn/@fontsource/noto-sans-sc/500.css');
+@import url('https://font.onmicrosoft.cn/@fontsource/noto-sans-sc/700.css');
+@import url('https://font.onmicrosoft.cn/@fontsource/inter/500.css');
+@import url('https://font.onmicrosoft.cn/@fontsource/inter/700.css');
+@import url('https://font.onmicrosoft.cn/@fontsource/jetbrains-mono/500.css');
+@import url('https://font.onmicrosoft.cn/@fontsource/jetbrains-mono/700.css');
 
 /* 全局字体设置 */
 html {
