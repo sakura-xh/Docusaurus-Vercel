@@ -4,7 +4,7 @@
  * work well for content-centric websites.
  */
 
-/* You can override the default Infima variables here. */
+/* Override default Infima variables */
 :root {
   --ifm-color-primary: #2e8555;
   --ifm-color-primary-dark: #29784c;
@@ -17,7 +17,7 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* Dark mode palette */
 [data-theme='dark'] {
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;
@@ -29,64 +29,71 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
-/* 自定义样式 */
-/* 中文使用 Noto Sans SC，英文使用 Inter，代码使用 Jet */
-@font-face {
-  font-family: 'Noto Sans SC';
-  src: url('https://npm.onmicrosoft.cn/@fontsource-variable/noto-sans-sc/index.css') format('woff2');
-  font-weight: 100 900; /* 支持的字重范围 */
-  font-display: swap; /* 优化字体加载行为 */
+/* 自定义字体 */
+@import url('https://npm.onmicrosoft.cn/@fontsource-variable/noto-sans-sc/index.css');
+@import url('https://npm.onmicrosoft.cn/@fontsource-variable/inter/index.css');
+@import url('https://npm.onmicrosoft.cn/@fontsource-variable/jetbrains-mono/index.css');
+
+/* 全局字体设置 */
+html {
+  font-family: 'Inter Variable', 'Noto Sans SC Variable', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  /* 默认字重 */
+  scroll-behavior: smooth;
 }
 
-@font-face {
-  font-family: 'Inter';
-  src: url('https://npm.onmicrosoft.cn/@fontsource-variable/inter/index.css') format('woff2');
-  font-weight: 100 900;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('https://npm.onmicrosoft.cn/@fontsource-variable/jetbrains-mono@latest/index.css') format('woff2');
-  font-weight: 100 900;
-  font-display: swap;
-}
-/* 代码 块*/
-
-.token {
-  font-family: 'JetBrains Mono', monospace;
+/* 代码块字体设置 */
+.token,
+code,
+pre {
+  font-family: 'JetBrains Mono Variable', 'Courier New', Courier, monospace;
   font-weight: 500;
 }
 
-/* 行内代码 */
+/* 行内代码样式 */
 code {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 500;
   color: #c7254e;
-  background-color: #f9f2f480;
+  background-color: rgba(249, 242, 244, 0.5);
   padding: 2px 4px;
   border-radius: 4px;
 }
 
-/*全局英文使用 Inter，中文使用 Noto Sans SC*/
-html {
-  font-family: 'Inter', 'Noto Sans SC', sans-serif;
-  font-weight: 500;
-  /* 添加这行，直接设置全局字体大小 */
-}
-
-/* 增大主要内容区域的字体大小 */
+/* 主要内容区域字体大小 */
 .main-wrapper .container {
-  font-size: 20px;
-  /* 或者您想要的其他大小 */
+  font-size: 1.125rem;
+  /* 18px，使用 rem 单位 */
+  line-height: 1.6;
+  /* 提高可读性 */
 }
 
-/* 保持其他区域的字体大小不变 */
+/* 导航栏和侧边栏字体大小 */
 .navbar,
 .navbar__items,
 .menu,
 .table-of-contents {
-  font-size: 18px;
-  /* 或者保持原来的大小 */
+  font-size: 1rem;
+  /* 16px，保持默认大小 */
 }
 
+/* 优化代码块高亮行背景色 */
+.docusaurus-highlighted-code-line {
+  background-color: var(--docusaurus-highlighted-code-line-bg);
+}
+
+/* 响应式设计：在小屏幕上调整字体大小 */
+@media (max-width: 768px) {
+  .main-wrapper .container {
+    font-size: 1rem;
+    /* 16px */
+  }
+}
+
+a {
+  transition: color 0.2s ease;
+}
+
+/* 行内代码样式 */
+[data-theme='dark'] code {
+  color: #ff6b8b;
+  background-color: rgba(249, 242, 244, 0.1);
+}
