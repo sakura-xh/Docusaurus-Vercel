@@ -30,30 +30,41 @@
 }
 
 /* 自定义字体 */
-@import url('https://use.sevencdn.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Noto+Sans+SC:wght@100..900&display=swap');
+@import url('https://use.sevencdn.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import url('/static/harmonyos-fonts/css/harmonyos_sans_sc.css');
 
 /* 全局字体设置 */
 html {
-  font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-weight: 500;
+  font-family: 'Inter', 'HarmonyOS Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
   /* 默认字重 */
   scroll-behavior: smooth;
 }
 
-/* 代码块字体设置 */
+
+/* 代码块和行内代码字体设置 */
 .token,
 code,
-pre {
-  font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
-  font-weight: 500;
+pre,
+:not(pre)>code {
+  /* 特别指定行内代码 */
+  font-family: 'JetBrains Mono', 'Courier New', Courier, monospace !important;
+  /* 添加 !important 确保优先级 */
+  font-weight: inherit;
 }
 
 /* 行内代码样式 */
-code {
+:not(pre)>code {
   color: #c7254e;
   background-color: rgba(249, 242, 244, 0.5);
   padding: 2px 4px;
   border-radius: 4px;
+}
+
+/* 暗色模式行内代码样式 */
+[data-theme='dark'] :not(pre)>code {
+  color: #ff6b8b;
+  background-color: rgba(249, 242, 244, 0.1);
 }
 
 /* 主要内容区域字体大小 */
@@ -88,10 +99,4 @@ code {
 
 a {
   transition: color 0.2s ease;
-}
-
-/* 行内代码样式 */
-[data-theme='dark'] code {
-  color: #ff6b8b;
-  background-color: rgba(249, 242, 244, 0.1);
 }
